@@ -1,8 +1,13 @@
-# FROM maven:3.8.2-jdk-8 # for Java 8
-FROM maven:3.8.7-openjdk-18
+FROM eclipse-temurin:21.0.1_12-jdk as builder
+WORKDIR extracted
+ADD target/*.jar app.jar
+RUN java -Djarmode=layertools -jar app.jar extract
 
-WORKDIR /
-COPY . .
-RUN mvn clean install
-
-CMD mvn spring-boot:run
+FROM eclipse-temurin:21.0.1_12-jdk
+WORKDIR application
+COPY --from=builder extracted/dependencies/ ./
+COPY --from=builder extracted/spring-boot-loader/ ./
+COPY --from=builder extracted/snapshot-dependencies/ ./
+COPY --from=builder extracted/application ./
+EXPOSE 8080
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]
