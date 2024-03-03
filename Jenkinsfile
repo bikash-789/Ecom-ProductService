@@ -1,35 +1,36 @@
+def gv
 pipeline{
     agent any
     tools{
         maven 'maven-3.9.6'
     }
     stages{
+        stage("init")
+        {
+            steps{
+                script{
+                    gv = load "script.groovy"
+                }
+            }
+        }
         stage("build jar"){
             steps{
                 script{
-                    echo 'Building the application...'
-                    sh 'mvn package'
+                    gv.buildJar()
                 }
             }
         }
         stage("build image"){
             steps{
                 script{
-                    echo 'Building the docker images...'
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub-credentials', passwordVariable: 'PASS', usernameVariable: 'USERNAME')])
-                    {
-                        sh 'docker build -t bikash789/product-service-private:psa-2.0 .'
-                        sh "docker login -u $USERNAME -p $PASS"
-                        sh "docker push bikash789/product-service-private:psa-2.0"
-                    }
-
+                    gv.buildImage()
                 }
             }
         }
         stage("deploy"){
             steps{
                 script{
-                    echo "Deploying the application..."
+                    gv.deployApp()
                 }
             }
         }
