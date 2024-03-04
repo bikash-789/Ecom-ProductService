@@ -24,7 +24,7 @@ pipeline{
         stage("build image"){
             steps{
                 script{
-                    buildImage 'bikash789/product-service-private' 'psa-2.1'
+                    buildImage 'bikash789/product-service-private', 'psa-2.1'
                 }
             }
         }
