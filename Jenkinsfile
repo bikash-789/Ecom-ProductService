@@ -57,5 +57,24 @@ pipeline{
                 }
             }
         }
+        stage("commit version update")
+        {
+            steps{
+                script{
+                    withCredentials([script.usernamePassword(credentialsId: 'github-bikash', passwordVariable: 'PASS', usernameVariable: 'USERNAME')]) {
+                        sh("git config --global user.email 'jenkins@example.com'")
+                        sh("git config --global user.name 'Jenkins'")
+                        sh('git status')
+                        sh('git branch')
+                        sh('git config --list')
+
+                        sh("git remote set-url origin https://${USERNAME}:${PASS}@github.com/bikash-789/Ecom-ProductService")
+                        sh('git add .')
+                        sh('git commit -m "CI: Version bump"')
+                        sh('git push origin HEAD:jenkins-shared-lib')
+                    }
+                }
+            }
+        }
     }
 }
