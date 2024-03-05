@@ -64,9 +64,6 @@ pipeline{
                     withCredentials([usernamePassword(credentialsId: 'github-access-token', passwordVariable: 'PASS', usernameVariable: 'USERNAME')]) {
                         sh("git config --global user.email 'jenkins@example.com'")
                         sh("git config --global user.name 'Jenkins'")
-                        sh('git status')
-                        sh('git branch')
-                        sh('git config --list')
 
                         sh("git remote set-url origin https://${PASS}@github.com/bikash-789/Ecom-ProductService")
                         sh('git add .')
