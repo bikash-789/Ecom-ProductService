@@ -22,6 +22,18 @@ pipeline{
                 }
             }
         }
+        stage("increment version")
+        {
+            steps{
+                script{
+                    echo 'incrementing app version...'
+                    sh 'mvn build-helper:parse-version versions:set -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} versions:commit'
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.TAG_NAME = "$version-$BUILD_NUMBER"
+                }
+            }
+        }
         stage("build jar"){
             steps{
                 script{
@@ -32,9 +44,9 @@ pipeline{
         stage("build and push image"){
             steps{
                 script{
-                    buildImage('bikash789/product-service-private', 'psa-2.1')
+                    buildImage('bikash789/product-service-private', TAG_NAME)
                     dockerLogin()
-                    dockerPush('bikash789/product-service-private', 'psa-2.1')
+                    dockerPush('bikash789/product-service-private', TAG_NAME)
                 }
             }
         }
