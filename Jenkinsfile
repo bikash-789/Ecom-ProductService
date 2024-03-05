@@ -1,3 +1,4 @@
+@Library('jenkins-shared-library')
 def gv
 pipeline{
     agent any
@@ -16,14 +17,16 @@ pipeline{
         stage("build jar"){
             steps{
                 script{
-                    gv.buildJar()
+                    buildJar()
                 }
             }
         }
-        stage("build image"){
+        stage("build and push image"){
             steps{
                 script{
-                    gv.buildImage()
+                    buildImage('bikash789/product-service-private', 'psa-2.1')
+                    dockerLogin()
+                    dockerPush('bikash789/product-service-private', 'psa-2.1')
                 }
             }
         }
