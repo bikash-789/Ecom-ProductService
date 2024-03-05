@@ -68,7 +68,7 @@ pipeline{
                         sh('git branch')
                         sh('git config --list')
 
-                        sh("git remote set-url origin https://${USERNAME}:${PASS}@github.com/bikash-789/Ecom-ProductService")
+                        sh("git remote set-url origin https://github.com/bikash-789/Ecom-ProductService")
                         sh('git add .')
                         sh('git commit -m "CI: Version bump"')
                         sh('git push origin HEAD:jenkins-shared-lib')
