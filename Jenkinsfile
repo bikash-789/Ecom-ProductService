@@ -21,10 +21,12 @@ pipeline{
                 }
             }
         }
-        stage("build image"){
+        stage("build and push image"){
             steps{
                 script{
                     buildImage('bikash789/product-service-private', 'psa-2.1')
+                    dockerLogin()
+                    dockerPush('bikash789/product-service-private', 'psa-2.1')
                 }
             }
         }
